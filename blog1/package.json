@@ -1,0 +1,22 @@
+{
+  "name": "blog-node-zzc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "NODE_ENV=dev nodemon ./bin/www.js",
+    "prd": "cross-env NODE_ENV=production nodemon ./bin/www.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiger-colonel/blog-node-zzc.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tiger-colonel/blog-node-zzc/issues"
+  },
+  "homepage": "https://github.com/tiger-colonel/blog-node-zzc#readme"
+}
