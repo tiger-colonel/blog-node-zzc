@@ -16,7 +16,7 @@ const getPostData = (req) => {
         req.on('data', (chunk) => {
             postData += chunk.toString();
         })
-        req.end('end', () => {
+        req.on('end', () => {
             if (!postData) {
                 resolve({});
                 return;
@@ -37,7 +37,7 @@ const serverHandle = (req, res) => {
     req.path = url.split('?')[0];
 
     // 解析query
-    req.query = querystring.parse(url);
+    req.query = querystring.parse(url.split('?')[1]);
 
     // 处理postData
     getPostData(req).then(postData => {
