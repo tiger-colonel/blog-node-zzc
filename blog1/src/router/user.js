@@ -18,8 +18,6 @@ const handleUserRouter = (req, res) => {
                 req.session.username = loginData.username;
                 req.session.realname = loginData.realname;
 
-                console.log('-----req.session-----', req.session);
-
                 // let expires = getCookieExpires();
                 // res.setHeader('Set-Cookie', `username=${loginData.username}; path=/; httpOnly; expires=${expires}`);
 
