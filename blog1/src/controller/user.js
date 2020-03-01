@@ -1,7 +1,6 @@
 const {exec} = require('../db/mysql');
 
-const login = (loginData = {}) => {
-    const {username, password} = loginData;
+const login = (username, password) => {
     const sql = `
         select username, realname from users where username='${username}' and password='${password}';
     `;
