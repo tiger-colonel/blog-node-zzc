@@ -1,19 +1,20 @@
-const {checkLogin} = require('../controller/user');
-
-const {SuccessModal, ErrorModal} = require('../model/resModel');
+const {login} = require('../controller/user.js');
+const {SuccessModel, ErrorModel} = require('../model/resModal.js');
 
 const handleUserRouter = (req, res) => {
     const method = req.method;
 
-    // 登录接口
     if (method === 'POST' && req.path === '/api/user/login') {
-        const {username, password} = req.body;
-        const result = checkLogin(username, password);
-        if (result) {
-            return new SuccessModal()
-        } else {
-            return new ErrorModal('登录失败')
-        }
+        return login(req.body).then(loginData => {
+
+            if (loginData.username) {
+                return new SuccessModel(loginData, '登录成功')
+            } else {
+                return new ErrorModel('登录失败')
+            }
+        }).catch(err => {
+            return new ErrorModel('登录失败')
+        })
     }
 }
 

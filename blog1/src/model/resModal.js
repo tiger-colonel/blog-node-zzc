@@ -1,4 +1,4 @@
-class BaseModal {
+class BaseModel {
     constructor(data, message) {
         if (typeof data === 'string') {
             this.message = data;
@@ -14,21 +14,21 @@ class BaseModal {
     }
 }
 
-class SuccessModal extends BaseModal {
+class SuccessModel extends BaseModel {
     constructor(data, message) {
         super(data, message);
         this.errno = 0;
     }
 }
 
-class ErrorModal extends BaseModal {
+class ErrorModel extends BaseModel {
     constructor(data, message) {
         super(data, message);
-        this.errno = -1;
+        this.errno = -1
     }
 }
 
 module.exports = {
-    SuccessModal,
-    ErrorModal,
+    SuccessModel,
+    ErrorModel,
 }

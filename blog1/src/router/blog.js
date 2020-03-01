@@ -1,61 +1,59 @@
+const {SuccessModel, ErrorModel} = require('../model/resModal.js');
 const { 
-    getList, 
+    getList,
     getDetail,
     newBlog,
     updateBlog,
-    deleteBlog,
-} = require('../controller/blog');
-
-const {SuccessModal, ErrorModal} = require('../model/resModel');
+    deleteBlog
+} = require('../controller/blog.js');
 
 const handleBlogRouter = (req, res) => {
-    const id = req.query.id;
     const method = req.method;
+    const {id = ''} = req.query;
 
-    // 获取博客列表
     if (method === 'GET' && req.path === '/api/blog/list') {
-        const author = req.query.author || '';
-        const keyword = req.query.keyword || '';
-        const listData = getList(author, keyword);
-        return new SuccessModal(listData, {
-            msg: '这是博客列表接口',
-        })
-    }
-
-    // 获取博客详情
-    if (method === 'GET' && req.path === '/api/blog/detail') {
-        
-        const detailData = getDetail(id)
-        return new SuccessModal(detailData, {
-            msg: '这是博客详情接口'
+        const {author = '', keyword = ''} = req.query;
+        return getList(author, keyword).then(data => {
+            return new SuccessModel(data, '请求成功');
         });
     }
 
-    // 新建博客
+    if (method === 'GET' && req.path === '/api/blog/detail') {
+        return getDetail(id).then(detail => {
+            return new SuccessModel(detail, '请求成功')
+        }).catch(err => {
+            return new ErrorModel(err, '请求失败')
+        })
+    }
+
     if (method === 'POST' && req.path === '/api/blog/new') {
-        const data = newBlog(req.body);
-
-        return new SuccessModal(data);
+        req.body.author = 'zhangsan';
+        return newBlog(req.body).then(newBlogData => {
+            return new SuccessModel(newBlogData, '创建成功')
+        }).catch(err => {
+            return new ErrorModel(err, '创建失败')
+        })
     }
 
-    // 更新博客
     if (method === 'POST' && req.path === '/api/blog/update') {
-        const result = updateBlog(id, req.body);
-        if (result) {
-            return new SuccessModal()
-        } else {
-            return new ErrorModal('更新失败')
-        }
+        return updateBlog(id, req.body).then(updateBlogData => {
+            return new SuccessModel(updateBlogData, '更新成功')
+        }).catch(err => {
+            return new ErrorModel('更新博客失败')
+        })
     }
 
-    // 删除博客
     if (method === 'POST' && req.path === '/api/blog/delete') {
-        const result = deleteBlog(id)
-        if (result) {
-            return new SuccessModal()
-        } else {
-            return new ErrorModal('删除失败')
-        }
+        const author = 'zhangsan';
+        return deleteBlog(id, author).then(deleteBlogData => {
+            if (deleteBlogData) {
+                return new SuccessModel(deleteBlogData, '删除成功')
+            } else {
+                return new ErrorModel('删除博客失败')
+            }
+        }).catch(err => {
+            return new ErrorModel('删除博客失败')
+        })
     }
 }
 
