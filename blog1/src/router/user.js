@@ -1,5 +1,6 @@
 const {login} = require('../controller/user.js');
 const {SuccessModel, ErrorModel} = require('../model/resModal.js');
+const { set } = require('../db/redis')
 
 const getCookieExpires = () => {
     const d = new Date();
@@ -17,10 +18,10 @@ const handleUserRouter = (req, res) => {
                 // 设置session
                 req.session.username = loginData.username;
                 req.session.realname = loginData.realname;
+                set(req.sessionId, req.session);
 
                 // let expires = getCookieExpires();
                 // res.setHeader('Set-Cookie', `username=${loginData.username}; path=/; httpOnly; expires=${expires}`);
-
 
                 return new SuccessModel(loginData, '登录成功')
             } else {

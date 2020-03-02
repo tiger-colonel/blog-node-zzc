@@ -1,10 +1,12 @@
 const querystring = require('querystring');
+const {get, set} = require('./src/db/redis');
 
 const handleBlogRouter = require('./src/router/blog.js');
 const handleUserRouter = require('./src/router/user.js');
 
 // session数据
-const SESSION_DATA = {};
+// const SESSION_DATA = {};
+// const REDIS_DATA = {};
 
 // 用于处理postdata
 const getPostData = (req) => {
@@ -51,25 +53,47 @@ const serverHandle = (req, res) => {
         const arr = item.split('=');
         const key = arr[0].trim();
         const value = arr[1].trim();
-        console.log(key, value);
         req.cookie[key] = value;
     });
 
     // 解析session
+    // let needSetCookie = false;
+    // let userId = req.cookie.userid;
+    // if (userId) {
+    //     if (!SESSION_DATA[userId]) {
+    //         SESSION_DATA[userId] = {};
+    //     }
+    // } else {
+    //     needSetCookie = true;
+    //     userId = `${Date.now()}_${Math.random()}`.replace('.', '');
+    //     SESSION_DATA[userId] = {};
+    // }
+    // req.session = SESSION_DATA[userId];
+
+    // 解析session (使用redis)
     let needSetCookie = false;
     let userId = req.cookie.userid;
-    if (userId) {
-        if (!SESSION_DATA[userId]) {
-            SESSION_DATA[userId] = {};
-        }
-    } else {
+    if (!userId) {
         needSetCookie = true;
         userId = `${Date.now()}_${Math.random()}`.replace('.', '');
-        SESSION_DATA[userId] = {};
+        // 初始化redis 的 session 值
+        set(userId, {});
     }
-    req.session = SESSION_DATA[userId];
 
-    getPostData(req).then(postData => {
+    // 获取session
+    req.sessionId = userId;
+    get(req.sessionId).then(sessionData => {
+        if (sessionData === null) {
+            // 初始化redis 的 session
+            set(req.sessionId, {});
+            // 设置session
+            req.session = {};
+        } else {
+            req.session = sessionData;
+        }
+        // console.log('-----1-----', req.session);
+        return getPostData(req);
+    }).then(postData => {
         req.body = postData;
 
         const blogResult = handleBlogRouter(req, res);
