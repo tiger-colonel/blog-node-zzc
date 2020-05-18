@@ -42,4 +42,24 @@ const handleUserRouter = (req, res) => {
     // }
 }
 
+function render(vdom) {
+    if (typeof vdom === 'string' || typeof vdom === 'number') {
+        return document.createTextNode(vdom)
+    }
+
+    const {tag, props, children} = vdom;
+    const ele = document.createElement(tag);
+    setProps(ele, props)
+}
+
+function setProps(ele, props) {
+    Object.entires(props).forEach([key,value] => {
+        setProp(ele, key, value)
+    });
+}
+
+function setProp(ele, key, value) {
+    ele.setAttribute(key === 'className' ? 'class' : key, value)
+}
+
 module.exports = handleUserRouter;

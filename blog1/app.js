@@ -69,6 +69,12 @@ const serverHandle = (req, res) => {
     //     SESSION_DATA[userId] = {};
     // }
     // req.session = SESSION_DATA[userId];
+    let useId = req.cookie.userid;
+    if (userId) {
+        if (!SESSION_DATA[userId]) {
+            
+        }
+    }
 
     // 解析session (使用redis)
     let needSetCookie = false;
